@@ -42,7 +42,7 @@ class _HomeViewState extends State<HomeView> {
                   child: CircularProgressIndicator(),
                 )
               : ListView.builder(
-                  itemCount: data.newsCollection.totalResults,
+                  itemCount: data.newsCollection.articles?.length,
                   itemBuilder: (context, index) {
                     Articles? article = data.newsCollection.articles?[index];
                     String? time = convertDateToString(article?.publishedAt);
@@ -70,6 +70,14 @@ class _HomeViewState extends State<HomeView> {
                                   height: 200,
                                   width: getSize(context).width / 1.1,
                                   fit: BoxFit.cover,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception,
+                                      StackTrace? stackTrace) {
+                                    return Container(
+                                      decoration:
+                                          BoxDecoration(color: Colors.grey),
+                                    );
+                                  },
                                 ),
                               ),
                             ),
