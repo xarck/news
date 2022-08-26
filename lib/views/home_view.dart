@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:news/utils/util.dart';
+import 'package:provider/provider.dart';
+
+import 'package:news/constants/constants.dart';
 import 'package:news/controllers/home_controller.dart';
 import 'package:news/models/news_model.dart';
-import 'package:news/utils/dimensions.dart';
-import 'package:news/utils/time_converter.dart';
-import 'package:news/views/news_view.dart';
-import 'package:provider/provider.dart';
+import 'package:news/views/news_container.dart';
 
 class HomeView extends StatefulWidget {
   HomeView({Key? key}) : super(key: key);
@@ -13,121 +14,73 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView>
+    with SingleTickerProviderStateMixin {
+  TabController? _tabController;
+  int? _activeTabIndex = 0;
   @override
   void initState() {
     super.initState();
+    TabController(length: categories.length, vsync: this);
+    _tabController?.addListener(_setActiveTabIndex);
     fetchNews();
+  }
+
+  void _setActiveTabIndex() {
+    _activeTabIndex = _tabController?.index;
   }
 
   fetchNews() async {
     HomeController hc = Provider.of<HomeController>(context, listen: false);
-    await hc.fetchNews();
+    await hc.fetchNewsByCateogries();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'HEADLINES',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        centerTitle: true,
-      ),
-      body: Consumer<HomeController>(
-        builder: (context, data, child) {
-          return data.loading
-              ? Center(
-                  child: CircularProgressIndicator(),
+    return DefaultTabController(
+      length: categories.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'HEADLINES',
+            style: Theme.of(context).textTheme.displayLarge,
+          ),
+          centerTitle: true,
+          bottom: TabBar(
+            labelColor: hexToColor("00ADB5"),
+            controller: _tabController,
+            splashFactory: NoSplash.splashFactory,
+            isScrollable: true,
+            tabs: categories
+                .map<Widget>(
+                  (category) => Tab(text: capitalize(category)),
                 )
-              : ListView.builder(
-                  itemCount: data.newsCollection.articles?.length,
-                  itemBuilder: (context, index) {
-                    Articles? article = data.newsCollection.articles?[index];
-                    String? time = convertDateToString(article?.publishedAt);
-                    return Container(
-                      margin: EdgeInsets.all(10),
-                      height: 200,
-                      child: Stack(
-                        children: [
-                          Center(
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => NewsView(
-                                      article: article!,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  article?.urlToImage ?? "",
-                                  height: 200,
-                                  width: getSize(context).width / 1.1,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (BuildContext context,
-                                      Object exception,
-                                      StackTrace? stackTrace) {
-                                    return Container(
-                                      decoration:
-                                          BoxDecoration(color: Colors.grey),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: 200,
-                            margin: EdgeInsets.all(10),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 5,
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  article?.title ?? " ",
-                                  style:
-                                      Theme.of(context).textTheme.displayMedium,
-                                ),
-                                SizedBox(
-                                  height: 24,
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      "${article?.source?.name}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
-                                    SizedBox(
-                                      width: 20,
-                                    ),
-                                    Text(
-                                      time,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                );
-        },
+                .toList(),
+          ),
+        ),
+        body: Consumer<HomeController>(
+          builder: (context, data, child) {
+            return TabBarView(
+              children: categories.asMap().entries.map((item) {
+                return data.loading == true
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : ListView.builder(
+                        itemCount: data.newsByCategories[_activeTabIndex!]
+                            .articles?.length,
+                        itemBuilder: (context, index) {
+                          Articles? article =
+                              data.newsByCategories[item.key].articles?[index];
+                          return NewsContainer(
+                            article: article,
+                          );
+                        },
+                      );
+              }).toList(),
+            );
+          },
+        ),
       ),
     );
   }

@@ -24,32 +24,27 @@ class MyApp extends StatelessWidget {
       title: 'News App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: "RoboRegular",
+        fontFamily: "Proxima",
         primarySwatch: Colors.blue,
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.black,
+          backgroundColor: hexToColor("222831"),
         ),
         textTheme: TextTheme(
           titleLarge: TextStyle(
-            fontFamily: "RoboBold",
-            fontSize: 29,
-            color: Colors.white,
+            fontSize: 17,
+            color: hexToColor("EEEEEE"),
           ),
           titleMedium: TextStyle(
-            fontFamily: "RoboBold",
-            fontSize: 12,
-            color: hexToColor("bababa"),
+            fontSize: 14,
+            color: hexToColor("EEEEEE"),
           ),
-          displayMedium: TextStyle(
-            fontSize: 20,
+          displayLarge: TextStyle(
+            fontFamily: "RoboBold",
+            fontSize: 24,
             color: hexToColor("f2f2f2"),
           ),
-          displaySmall: TextStyle(
-            fontSize: 14,
-            color: hexToColor("bababa"),
-          ),
         ),
-        scaffoldBackgroundColor: hexToColor("464646"),
+        scaffoldBackgroundColor: hexToColor("222831"),
       ),
       home: HomeView(),
     );
