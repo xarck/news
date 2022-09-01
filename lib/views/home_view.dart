@@ -45,7 +45,23 @@ class _HomeViewState extends State<HomeView>
             'HEADLINES',
             style: Theme.of(context).textTheme.displayLarge,
           ),
-          centerTitle: true,
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.search),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.sort,
+              ),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.filter_alt_outlined),
+            )
+          ],
+          // centerTitle: true,
           bottom: TabBar(
             labelColor: hexToColor("00ADB5"),
             controller: _tabController,

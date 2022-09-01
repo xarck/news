@@ -10,7 +10,7 @@ class HomeController extends ChangeNotifier {
   bool loading = true;
 
   // Fetch News From API
-  fetchNews() async {
+  searchNews(String serach, dynamic filters) async {
     try {
       Response response = await Dio().get(
           "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=${dotenv.env['API_KEY']}");
@@ -27,7 +27,7 @@ class HomeController extends ChangeNotifier {
     try {
       for (final category in categories) {
         Response response = await Dio().get(
-            "https://newsapi.org/v2/top-headlines?country=us&category=$category&apiKey=${dotenv.env['API_KEY']}");
+            "https://newsapi.org/v2/top-headlines?country=us&category=$category&apiKey=${dotenv.env['API_KEY']}&page=1");
         NewsModel catNews = NewsModel.fromJson(response.data);
         newsByCategories.add(catNews);
       }
