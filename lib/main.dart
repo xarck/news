@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:news/controllers/home_controller.dart';
+import 'package:news/routes/route_generator.dart';
 import 'package:news/utils/util.dart';
-import 'package:news/views/home_view.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => HomeController(),
-      child: const MyApp(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => HomeController(),
+        ),
+      ],
+      child: MyApp(),
     ),
   );
 }
@@ -22,6 +26,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'News App',
+      initialRoute: '/',
+      onGenerateRoute: RouteGenerator.generateRoute,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "Proxima",
@@ -46,7 +52,6 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: hexToColor("222831"),
       ),
-      home: HomeView(),
     );
   }
 }
