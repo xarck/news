@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "Proxima",
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
         appBarTheme: AppBarTheme(
           backgroundColor: hexToColor("222831"),
         ),

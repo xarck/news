@@ -199,16 +199,21 @@ class _HomeViewState extends State<HomeView>
                     ? Center(
                         child: CircularProgressIndicator(),
                       )
-                    : ListView.builder(
-                        itemCount: data.newsByCategories[_activeTabIndex!]
-                            .articles?.length,
-                        itemBuilder: (context, index) {
-                          Articles? article =
-                              data.newsByCategories[item.key].articles?[index];
-                          return NewsContainer(
-                            article: article,
-                          );
+                    : RefreshIndicator(
+                        onRefresh: () async {
+                          await hc.fetchNewsByCateogries();
                         },
+                        child: ListView.builder(
+                          itemCount: data.newsByCategories[_activeTabIndex!]
+                              .articles?.length,
+                          itemBuilder: (context, index) {
+                            Articles? article = data
+                                .newsByCategories[item.key].articles?[index];
+                            return NewsContainer(
+                              article: article,
+                            );
+                          },
+                        ),
                       );
               }).toList(),
             );

@@ -35,7 +35,6 @@ class HomeController extends ChangeNotifier {
   // Fetch News By Categories
   fetchNewsByCateogries() async {
     try {
-      print('sdfsf');
       for (final category in categories) {
         Response response = await Dio().get(
             "https://newsapi.org/v2/top-headlines?country=us&category=$category&sortBy=${sortEnumMap[sort_enum]}&apiKey=${dotenv.env['API_KEY']}&page=1");
