@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:news/controllers/search_controller.dart';
 import 'package:news/enums/sort_enums.dart';
 import 'package:news/utils/util.dart';
 import 'package:provider/provider.dart';
@@ -20,11 +21,14 @@ class _HomeViewState extends State<HomeView>
   TabController? _tabController;
   int? _activeTabIndex = 0;
   late HomeController hc;
+  late SearchController sc;
+  final TextEditingController _textEditingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     hc = Provider.of<HomeController>(context, listen: false);
+    sc = Provider.of<SearchController>(context, listen: false);
     TabController(length: categories.length, vsync: this);
     _tabController?.addListener(_setActiveTabIndex);
     fetchNews();
@@ -50,7 +54,73 @@ class _HomeViewState extends State<HomeView>
           ),
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  isScrollControlled: true,
+                  builder: (BuildContext context) {
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                      child: TextField(
+                        textInputAction: TextInputAction.go,
+                        controller: _textEditingController,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 16,
+                          color: hexToColor("00ADB5"),
+                        ),
+                        decoration: new InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(15, 5, 0, 5),
+                          prefixIcon: IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.search,
+                              color: hexToColor("00ADB5"),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: hexToColor("dddddd"),
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: hexToColor("dddddd"),
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Search',
+                          hintStyle: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 16,
+                          ),
+                        ),
+                        onSubmitted: ((value) {
+                          Navigator.pop(context);
+                          sc.fetchSearchNews(value);
+                          Navigator.pushNamed(
+                            context,
+                            '/search',
+                            arguments: {
+                              "search": value,
+                            },
+                          );
+                        }),
+                      ),
+                    );
+                  },
+                );
+              },
               icon: Icon(Icons.search),
             ),
             IconButton(
@@ -171,10 +241,6 @@ class _HomeViewState extends State<HomeView>
                 Icons.sort,
               ),
             ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.filter_alt_outlined),
-            )
           ],
           // centerTitle: true,
           bottom: TabBar(

@@ -34,13 +34,13 @@ class _NewsContainerState extends State<NewsContainer> {
       ),
       child: InkWell(
         onTap: () {
-          Navigator.push(
+          Navigator.pushNamed(
             context,
-            MaterialPageRoute(
-              builder: (context) => NewsView(
-                  articleUrl: widget.article!.url!,
-                  source: widget.article!.source!.name!),
-            ),
+            '/news',
+            arguments: {
+              "articleUrl": widget.article!.url!,
+              "source": widget.article!.source!.name!
+            },
           );
         },
         child: Column(
