@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:news/controllers/home_controller.dart';
+import 'package:news/controllers/search_controller.dart';
 import 'package:news/routes/route_generator.dart';
 import 'package:news/utils/util.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,9 @@ void main() async {
       providers: [
         ChangeNotifierProvider(
           create: (context) => HomeController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SearchController(),
         ),
       ],
       child: MyApp(),
