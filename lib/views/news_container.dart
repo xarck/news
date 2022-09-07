@@ -4,7 +4,6 @@ import 'package:news/models/news_model.dart';
 import 'package:news/utils/dimensions.dart';
 import 'package:news/utils/util.dart';
 import 'package:news/utils/time_converter.dart';
-import 'package:news/views/news_view.dart';
 
 class NewsContainer extends StatefulWidget {
   NewsContainer({
